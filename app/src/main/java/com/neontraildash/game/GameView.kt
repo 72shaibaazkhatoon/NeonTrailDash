@@ -1,3 +1,4 @@
+
 package com.neontraildash.game
 
 import android.content.Context
@@ -42,6 +43,7 @@ class GameView(
         val w = width.toFloat()
         val h = height.toFloat()
         if (w <= 0 || h <= 0) return
+
         drawBackground(canvas, w, h)
         val ground = h * .82f
         drawTrack(canvas, w, h, ground)
@@ -76,11 +78,14 @@ class GameView(
     private fun drawBackground(c: Canvas, w: Float, h: Float) {
         c.drawColor(Color.rgb(13, 17, 49))
         paint.shader = LinearGradient(0f, 0f, 0f, h, Color.rgb(15, 26, 69), Color.rgb(84, 36, 112), Shader.TileMode.CLAMP)
-        c.drawRect(0f, 0f, w, h, paint); paint.shader = null
+        c.drawRect(0f, 0f, w, h, paint)
+        paint.shader = null
+
         stars.forEachIndexed { i, p ->
             paint.color = if (i % 4 == 0) cyan else Color.WHITE
             c.drawCircle(p.first * w, p.second * h, if (i % 5 == 0) 2.5f else 1.4f, paint)
         }
+
         for (i in 0..10) {
             val bw = w / 11f
             val x = i * bw
@@ -88,13 +93,20 @@ class GameView(
             paint.color = Color.rgb(28, 37, 78)
             c.drawRect(x, h * .68f - bh, x + bw - 4, h * .68f, paint)
             paint.color = Color.rgb(66, 194, 222)
-            for (j in 0..2) c.drawRect(x + 8 + j * 13, h * .68f - bh + 12, x + 14 + j * 13, h * .68f - bh + 23, paint)
+            for (j in 0..2) {
+                c.drawRect(x + 8 + j * 13, h * .68f - bh + 12, x + 14 + j * 13, h * .68f - bh + 23, paint)
+            }
         }
     }
 
     private fun drawTrack(c: Canvas, w: Float, h: Float, ground: Float) {
-        paint.color = Color.rgb(22, 23, 48); c.drawRect(0f, ground, w, h, paint)
-        paint.color = cyan; paint.strokeWidth = 4f; c.drawLine(0f, ground, w, ground, paint)
+        paint.color = Color.rgb(22, 23, 48)
+        c.drawRect(0f, ground, w, h, paint)
+
+        paint.color = cyan
+        paint.setStrokeWidth(4f)
+        c.drawLine(0f, ground, w, ground, paint)
+
         paint.color = Color.rgb(110, 88, 192)
         val offset = (frame * speed * 1.8f) % 90f
         for (i in -1..(w / 90).toInt() + 1) {
@@ -106,26 +118,49 @@ class GameView(
     private fun drawRunner(c: Canvas, x: Float, y: Float) {
         paint.color = Color.argb(70, 0, 0, 0)
         c.drawOval(x - 25, height * .82f - 7, x + 25, height * .82f + 3, paint)
-        paint.color = cyan; c.drawCircle(x, y + 18, 19f, paint)
-        paint.color = Color.rgb(32, 35, 73); c.drawRoundRect(x - 15, y + 31, x - 4, y + 53, 5f, 5f, paint)
+
+        paint.color = cyan
+        c.drawCircle(x, y + 18, 19f, paint)
+
+        paint.color = Color.rgb(32, 35, 73)
+        c.drawRoundRect(x - 15, y + 31, x - 4, y + 53, 5f, 5f, paint)
         c.drawRoundRect(x + 5, y + 31, x + 16, y + 53, 5f, 5f, paint)
-        paint.color = white; c.drawCircle(x + 7, y + 14, 4f, paint)
-        paint.color = Color.rgb(30, 35, 72); c.drawCircle(x + 8, y + 14, 1.7f, paint)
-        paint.color = gold; c.strokeWidth = 5f; c.strokeCap = Paint.Cap.ROUND
+
+        paint.color = white
+        c.drawCircle(x + 7, y + 14, 4f, paint)
+
+        paint.color = Color.rgb(30, 35, 72)
+        c.drawCircle(x + 8, y + 14, 1.7f, paint)
+
+        paint.color = gold
+        paint.setStrokeWidth(5f)
+        paint.setStrokeCap(Paint.Cap.ROUND)
         c.drawLine(x - 15, y + 20, x - 29, y + 31, paint)
     }
 
     private fun drawObstacle(c: Canvas, o: Obstacle, ground: Float) {
         paint.color = pink
-        val path = Path().apply { moveTo(o.x, ground); lineTo(o.x + o.width/2, ground-o.height); lineTo(o.x+o.width, ground); close() }
+        val path = Path().apply {
+            moveTo(o.x, ground)
+            lineTo(o.x + o.width/2, ground-o.height)
+            lineTo(o.x+o.width, ground)
+            close()
+        }
         c.drawPath(path, paint)
-        paint.color = Color.rgb(255, 174, 192); c.drawRect(o.x, ground-4, o.x+o.width, ground, paint)
+
+        paint.color = Color.rgb(255, 174, 192)
+        c.drawRect(o.x, ground-4, o.x+o.width, ground, paint)
     }
 
     private fun drawCoin(c: Canvas, x: Float, y: Float) {
-        paint.color = gold; c.drawCircle(x, y, 11f, paint)
-        paint.color = Color.rgb(255, 244, 173); paint.style = Paint.Style.STROKE; paint.strokeWidth = 3f
-        c.drawCircle(x, y, 7f, paint); paint.style = Paint.Style.FILL
+        paint.color = gold
+        c.drawCircle(x, y, 11f, paint)
+
+        paint.color = Color.rgb(255, 244, 173)
+        paint.style = Paint.Style.STROKE
+        paint.setStrokeWidth(3f)
+        c.drawCircle(x, y, 7f, paint)
+        paint.style = Paint.Style.FILL
     }
 
     private fun drawHud(c: Canvas, w: Float, h: Float) {
@@ -136,7 +171,8 @@ class GameView(
     }
 
     private fun drawOverlay(c: Canvas, w: Float, h: Float, title: String, subtitle: String) {
-        paint.color = 0xB900071C.toInt(); c.drawRect(0f, 0f, w, h, paint)
+        paint.color = 0xB900071C.toInt()
+        c.drawRect(0f, 0f, w, h, paint)
         centeredText(c, title, w/2f, h*.39f, h*.105f, white)
         centeredText(c, subtitle, w/2f, h*.51f, h*.05f, cyan)
     }
@@ -151,9 +187,12 @@ class GameView(
         text(c, value, x, y, size, color, Paint.Align.CENTER)
 
     private fun text(c: Canvas, value: String, x: Float, y: Float, size: Float, color: Int, align: Paint.Align) {
-        paint.shader = null; paint.style = Paint.Style.FILL; paint.color = color
+        paint.shader = null
+        paint.style = Paint.Style.FILL
+        paint.color = color
         paint.typeface = Typeface.create("sans-serif-black", Typeface.BOLD)
-        paint.textSize = size; paint.textAlign = align
+        paint.textSize = size
+        paint.textAlign = align
         c.drawText(value, x, y, paint)
     }
 
@@ -163,28 +202,45 @@ class GameView(
         speed = (6f + frame / 1500f).coerceAtMost(11f)
         velocityY += .72f * dt
         playerY += velocityY * dt
-        if (playerY > 0f) { playerY = 0f; velocityY = 0f }
+
+        if (playerY > 0f) {
+            playerY = 0f
+            velocityY = 0f
+        }
+
         if (frame % max(48, (88 - speed * 3).toInt()) == 0) {
             obstacles.add(Obstacle(w + 30, h * .047f, h * (.09f + Random.nextFloat() * .045f)))
         }
-        if (frame % 68 == 0) pickups.add(Pickup(w + 25, ground - h * (.18f + Random.nextFloat()*.08f)))
+
+        if (frame % 68 == 0) {
+            pickups.add(Pickup(w + 25, ground - h * (.18f + Random.nextFloat()*.08f)))
+        }
+
         obstacles.forEach { it.x -= speed * dt }
         pickups.forEach { it.x -= speed * dt }
+
         val px = w * .16f
         val py = ground - h * .105f + playerY
         val runnerRect = RectF(px - 15, py + 2, px + 16, py + 50)
+
         val iterator = obstacles.iterator()
         while (iterator.hasNext()) {
             val o = iterator.next()
             val obstacleRect = RectF(o.x + 5, ground-o.height+7, o.x+o.width-5, ground)
-            if (RectF.intersects(runnerRect, obstacleRect)) { finishRun(); return }
+            if (RectF.intersects(runnerRect, obstacleRect)) {
+                finishRun()
+                return
+            }
             if (o.x + o.width < -10) iterator.remove()
         }
+
         val coinIterator = pickups.iterator()
         while (coinIterator.hasNext()) {
             val p = coinIterator.next()
             if (kotlin.math.hypot((p.x-px).toDouble(), (p.y-(py+24)).toDouble()) < 30) {
-                coins++; prefs.edit().putInt("coins", coins).apply(); coinIterator.remove()
+                coins++
+                prefs.edit().putInt("coins", coins).apply()
+                coinIterator.remove()
             } else if (p.x < -20) coinIterator.remove()
         }
     }
@@ -201,8 +257,14 @@ class GameView(
     }
 
     private fun startRun() {
-        score = 0; frame = 0; speed = 6f; playerY = 0f; velocityY = 0f
-        obstacles.clear(); pickups.clear(); state = State.RUNNING
+        score = 0
+        frame = 0
+        speed = 6f
+        playerY = 0f
+        velocityY = 0f
+        obstacles.clear()
+        pickups.clear()
+        state = State.RUNNING
         invalidate()
     }
 
@@ -213,20 +275,39 @@ class GameView(
         invalidate()
     }
 
-    fun pauseGame() { if (state == State.RUNNING) { state = State.MENU; invalidate() } }
-    fun resumeGame() { invalidate() }
+    fun pauseGame() {
+        if (state == State.RUNNING) {
+            state = State.MENU
+            invalidate()
+        }
+    }
+
+    fun resumeGame() {
+        invalidate()
+    }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (event.action != MotionEvent.ACTION_DOWN) return true
-        val x = event.x; val y = event.y; val w = width.toFloat(); val h = height.toFloat()
+
+        val x = event.x
+        val y = event.y
+        val w = width.toFloat()
+        val h = height.toFloat()
+
         when (state) {
             State.MENU -> startRun()
-            State.RUNNING -> if (playerY == 0f) { velocityY = -14.5f }
+            State.RUNNING -> if (playerY == 0f) {
+                velocityY = -14.5f
+            }
             State.OVER -> {
-                if (y in (h*.69f)..(h*.82f) && x in (w*.32f)..(w*.68f)) onRewardRequested()
-                else startRun()
+                if (y in (h*.69f)..(h*.82f) && x in (w*.32f)..(w*.68f)) {
+                    onRewardRequested()
+                } else {
+                    startRun()
+                }
             }
         }
+
         invalidate()
         return true
     }
