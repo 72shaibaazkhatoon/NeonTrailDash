@@ -1,5 +1,4 @@
 
-
 name: Build Neon Trail Dash Android App Bundle
 
 on:
@@ -20,9 +19,9 @@ jobs:
           java-version: '17'
 
       - name: Setup Android SDK
-  uses: android-actions/setup-android@v3
-  with:
-    packages: 'platform-tools'
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools'
 
       - name: Install Android SDK
         run: |
