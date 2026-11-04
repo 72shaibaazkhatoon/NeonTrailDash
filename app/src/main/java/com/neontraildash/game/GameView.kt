@@ -1,4 +1,5 @@
-
+paint.setStrokeWidth(5f)
+paint.setStrokeCap(Paint.Cap.ROUND)
 package com.neontraildash.game
 
 import android.content.Context
