@@ -1,5 +1,5 @@
 
-name: Build Neon Trail Dash Android App Bundle
+name: Build Neon Trail Dash Android App and APK
 
 on:
   workflow_dispatch:
@@ -32,12 +32,19 @@ jobs:
         with:
           gradle-version: '8.13'
 
-      - name: Build release bundle
-        run: gradle bundleRelease
+      - name: Build release bundle and APK
+        run: gradle bundleRelease assembleRelease
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: NeonTrailDash-release-AAB
           path: app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeonTrailDash-release-APK
+          path: app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
